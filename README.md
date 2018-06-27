@@ -18,8 +18,34 @@ func main() {
 
 [![asciicast](https://asciinema.org/a/MIvlqqIpgtwcZDsuWT1QQs79k.png)](https://asciinema.org/a/MIvlqqIpgtwcZDsuWT1QQs79k)
 
-No fancy config. simple interface.
+- leave
 
-### TODO
+```go
+// leave = true
+s.Done()
+s.Fail()
 
-- [ ] multiple spinners
+// leave = false
+s.DoneClean()
+s.FailClean()
+```
+
+- progress
+
+```go
+s := spinner.NewProgress("Fetching")
+s.Add()
+s.Add()
+s.DoneClean()
+s.Fail("second asset")
+s.Stop()
+```
+
+- group
+
+show multiple spinners at the same time.
+
+```go
+// not implemented.
+// use spinner.NewProgress() for multi-threaded env.
+```
