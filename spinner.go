@@ -41,15 +41,22 @@ func New(msg string) *Spinner {
 	return s
 }
 
-func (s *Spinner) Stop() {
+func (s *Spinner) Done() {
 	s.stopSignal <- struct{}{}
 	s.lock.Lock()
 	fmt.Printf("%s✔ %s\n", eraser, s.msg)
 	s.lock.Unlock()
 }
 
+func (s *Spinner) Fail() {
+	s.stopSignal <- struct{}{}
+	s.lock.Lock()
+	fmt.Printf("%s❌ %s\n", eraser, s.msg)
+	s.lock.Unlock()
+}
+
 func main() {
 	s := New("hello ..")
 	time.Sleep(3 * time.Second)
-	s.Stop()
+	s.Done()
 }

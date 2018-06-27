@@ -11,14 +11,15 @@ import (
 func main() {
     s := spinner.New("Downloading ..")
     time.Sleep(3 * time.Second)
-    s.Stop()
+    s.Done()
+    // s.Fail()
 }
 ```
 
 [![asciicast](https://asciinema.org/a/MIvlqqIpgtwcZDsuWT1QQs79k.png)](https://asciinema.org/a/MIvlqqIpgtwcZDsuWT1QQs79k)
 
-
 No fancy config. simple interface.
 
 ### TODO
+
 - [ ] multiple spinners
