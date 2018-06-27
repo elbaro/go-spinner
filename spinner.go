@@ -2,18 +2,16 @@ package spinner
 
 import (
 	"fmt"
-	"strings"
 	"sync"
 	"time"
-	"unicode/utf8"
 )
 
 var chars = []rune("⣾⣽⣻⢿⡿⣟⣯⣷")
+var eraser = "\x1B[2K\r"
 
 type Spinner struct {
 	lock       *sync.Mutex
 	msg        string
-	lastOutLen int
 	stopSignal chan struct{}
 }
 
@@ -21,7 +19,6 @@ func New(msg string) *Spinner {
 	s := &Spinner{
 		lock:       &sync.Mutex{},
 		msg:        msg,
-		lastOutLen: 0,
 		stopSignal: make(chan struct{}, 1),
 	}
 
@@ -32,13 +29,8 @@ func New(msg string) *Spinner {
 				case <-s.stopSignal:
 					return
 				default:
-					line := fmt.Sprintf("%c %s", chars[i], s.msg)
-					line_len := utf8.RuneCountInString(line)
-
 					s.lock.Lock()
-					s.erase()
-					fmt.Print(line)
-					s.lastOutLen = line_len
+					fmt.Printf("%s%c %s", eraser, chars[i], s.msg)
 					s.lock.Unlock()
 				}
 				time.Sleep(125 * time.Millisecond)
@@ -49,15 +41,10 @@ func New(msg string) *Spinner {
 	return s
 }
 
-func (s *Spinner) erase() {
-	fmt.Print(strings.Repeat("\b", s.lastOutLen))
-}
-
 func (s *Spinner) Stop() {
 	s.stopSignal <- struct{}{}
 	s.lock.Lock()
-	s.erase()
-	fmt.Printf("✔ %s\n", s.msg)
+	fmt.Printf("%s✔ %s\n", eraser, s.msg)
 	s.lock.Unlock()
 }
 
